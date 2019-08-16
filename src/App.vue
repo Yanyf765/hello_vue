@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import tree from './component/tree/tree.vue'
+import tree from './components/tree/tree.vue'
 export default {
   name: 'App',
   data: function () {
