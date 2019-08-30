@@ -8,7 +8,7 @@ import VueResource from 'vue-resource'
 // import axios from 'axios'
 // import 'element-ui/lib/theme-default/index.css'
 import 'element-ui/lib/theme-chalk/index.css'
-
+import './utils/filter_utils.js'
 Vue.use(ElementUI)
 Vue.use(VueResource)
 // Vue.use(axios)
