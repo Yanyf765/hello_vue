@@ -27,7 +27,7 @@ export default {
     // 本地json获取商品数据
     getTree () {
       // debugger
-      axios.get('/tree').then((res) => {
+      axios.get('/api/tree').then((res) => {
         this.data = res.data.data
       })
     }
@@ -37,7 +37,8 @@ export default {
 
 <style scoped>
 #tree {
-  width: 400px;
+  width: 200px;
+  height: 30px;
   background: #42b983;
   font-family: Consolas;
 }

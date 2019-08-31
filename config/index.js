@@ -11,11 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/tree':{                                // 要代理的接口名
-        target:'http://localhost:7000/tree',   // 要代理的接口地址
-        changeOrigin:true,                            // 允许跨域
-        pathRewrite:{'^/tree':''}            // 接口名重写
-      }
+      // '/tree':{                                // 要代理的接口名
+      //   target:'http://localhost:7000/tree',   // 要代理的接口地址
+      //   changeOrigin:true,                            // 允许跨域
+      //   pathRewrite:{'^/tree':''}            // 接口名重写
+      // }
     },
 
     // Various Dev Server settings
