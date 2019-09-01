@@ -41,7 +41,8 @@ export default {
   },
   data () {
     return {
-      activeName: 'post'
+      activeName: 'post',
+      isAdmin: false
     }
   }
 }

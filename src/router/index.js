@@ -9,6 +9,7 @@ import CateMana from '@/components/CateMana'
 import DataCharts from '@/components/DataCharts'
 import ArticleList from '@/components/ArticleList'
 import PostArticle from '@/components/PostArticle'
+import BlogDetail from '@/components/BlogDetail'
 
 Vue.use(Router)
 
@@ -48,6 +49,24 @@ export default new Router({
           path: '/postArticle',
           name: '发表文章',
           component: PostArticle,
+          meta: {
+            keepAlive: false
+          }
+        },
+        {
+          path: '/blogDetail',
+          name: '博客详情',
+          component: BlogDetail,
+          hidden: true,
+          meta: {
+            keepAlive: false
+          }
+        },
+        {
+          path: '/editBlog',
+          name: '博客详情',
+          component: PostArticle,
+          hidden: true,
           meta: {
             keepAlive: false
           }
