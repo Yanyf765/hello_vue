@@ -111,6 +111,9 @@ export default {
     searchClick () {
       this.loadBlogs(1, this.pageSize)
     },
+    itemClick (row) {
+      this.$router.push({path: '/blogDetail', query: {aid: row.id}})
+    },
     handleSelectionChange (val) {
       this.selItems = val
     },

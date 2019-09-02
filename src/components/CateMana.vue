@@ -67,7 +67,6 @@ export default {
   name: 'CateMana',
   methods: {
     addNewCate () {
-      debugger
       this.loading = true
       var _this = this
       postRequest('/admin/category/add', {cateName: this.cateName}).then(resp => {

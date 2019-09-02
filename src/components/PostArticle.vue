@@ -15,8 +15,7 @@
         v-for="tag in article.dynamicTags"
         closable
         :disable-transitions="false"
-        @close="handleClose(tag)"
-        style="margin-left: 10px">
+        @close="handleClose(tag)" style="margin-left: 10px">
         {{tag}}
       </el-tag>
       <el-input
@@ -63,6 +62,12 @@ import {getRequest} from '../utils/api'
 import {uploadFileRequest} from '../utils/api'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+// eslint-disable-next-line import/no-duplicates
+import {Bus} from '../utils/utils'
+// eslint-disable-next-line import/no-duplicates
+import {postRequest} from '../utils/api'
+// eslint-disable-next-line import/no-duplicates
+import {isNotNullORBlank} from '../utils/utils'
 export default {
   name: 'PostArticle',
   components: {
@@ -115,26 +120,39 @@ export default {
     cancelEdit () {
       this.$router.go(-1)
     },
-    getCategories () {
-      let _this = this
-      getRequest('/admin/category/all').then(resp => {
-        _this.categories = resp.data
-      })
-    },
-    handleInputConfirm () {
-      this.tagInputVisible = true
-      this.$nextTick(resp => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
-    },
-    showInput () {
-      this.tagInputVisible = true
-      this.$nextTick(resp => {
-        this.$refs.saveTagInput.$refs.input.focus()
+    saveBlog (state) {
+      if (!(isNotNullORBlank(this.article.title, this.article.mdContent, this.article.cid))) {
+        this.$message({type: 'error', message: '数据不能为空!'})
+        return
+      }
+      var _this = this
+      _this.loading = true
+      postRequest('/article/', {
+        id: _this.article.id,
+        title: _this.article.title,
+        mdContent: _this.article.mdContent,
+        htmlContent: _this.$refs.md.d_render,
+        cid: _this.article.cid,
+        state: state,
+        dynamicTags: _this.article.dynamicTags
+      }).then(resp => {
+        _this.loading = false
+        if (resp.status === 200 && resp.data.status === 'success') {
+          _this.article.id = resp.data.msg
+          _this.$message({type: 'success', message: state === 0 ? '保存成功!' : '发布成功!'})
+          Bus.$emit('blogTableReload')
+          if (state === 1) {
+            _this.$router.replace({path: '/articleList'})
+          }
+        }
+      }, resp => {
+        _this.loading = false
+        _this.$message({type: 'error', message: state === 0 ? '保存草稿失败!' : '博客发布失败!'})
       })
     },
     imgAdd (pos, $file) {
       var _this = this
+      // 第一步.将图片上传到服务器.
       var formdata = new FormData()
       formdata.append('image', $file)
       uploadFileRequest('/article/uploadimg', formdata).then(resp => {
@@ -146,14 +164,41 @@ export default {
         }
       })
     },
-    imgDel (pos) {
-
+    imgDel (pos) {},
+    getCategories () {
+      let _this = this
+      getRequest('/admin/category/all').then(resp => {
+        _this.categories = resp.data
+      })
+    },
+    handleClose (tag) {
+      this.article.dynamicTags.splice(this.article.dynamicTags.indexOf(tag), 1)
+    },
+    showInput () {
+      this.tagInputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm () {
+      let tagValue = this.tagValue
+      if (tagValue) {
+        this.article.dynamicTags.push(tagValue)
+      }
+      this.tagInputVisible = false
+      this.tagValue = ''
     }
   }
 }
 </script>
 
 <style>
+  .post-article > .main > #editor {
+    width: 100%;
+    height: 450px;
+    text-align: left;
+  }
+
   .post-article > .header {
     background-color: #ececec;
     margin-top: 10px;
@@ -161,19 +206,31 @@ export default {
     display: flex;
     justify-content: flex-start;
   }
-  .post-article > .header > .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-  .post-article > .header > .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
+
   .post-article > .main {
+    /*justify-content: flex-start;*/
     display: flex;
     flex-direction: column;
     padding-left: 5px;
     background-color: #ececec;
     padding-top: 0px;
+  }
+
+  .post-article > .header > .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+
+  .post-article > .header > .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .post-article > .header > .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 </style>

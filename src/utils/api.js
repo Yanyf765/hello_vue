@@ -1,4 +1,5 @@
 import axios from 'axios'
+// let base = 'http://localhost/api'
 let base = ''
 export const postRequest = (url, params) => {
   return axios({
