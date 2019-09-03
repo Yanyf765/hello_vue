@@ -50,6 +50,7 @@
       <el-button type="danger" :disabled="this.selItems.length==0" style="margin-top: 10px;width: 100px;"
                  @click="deleteAll" v-if="this.categories.length>0">批量删除
       </el-button>
+      <MyPagination :cur="currentPage" :all="totalCount" :callback="getTableData"></MyPagination>
     </el-main>
   </el-container>
 </template>
@@ -63,8 +64,12 @@ import {postRequest} from '../utils/api'
 import {deleteRequest} from '../utils/api'
 // eslint-disable-next-line import/no-duplicates
 import {getRequest} from '../utils/api'
+import MyPagination from '@/components/MyPagination'
 export default {
   name: 'CateMana',
+  components: {
+    MyPagination: MyPagination
+  },
   methods: {
     addNewCate () {
       this.loading = true
@@ -74,7 +79,7 @@ export default {
           var json = resp.data
           _this.$message({type: json.status, message: json.msg})
           _this.cateName = ''
-          _this.refresh()
+          _this.refresh(1)
         }
         _this.loading = false
       }, resp => {
@@ -87,11 +92,12 @@ export default {
         _this.loading = false
       })
     },
-    refresh () {
+    refresh (page) {
       let _this = this
-      getRequest('/admin/category/all').then(resp => {
-        _this.categories = resp.data
+      getRequest('/admin/category/page?page=' + page).then(resp => {
+        _this.categories = resp.data.data.list
         _this.loading = false
+        _this.totalCount = Math.ceil(resp.data.data.totalCount / 10)
       }, resp => {
         if (resp.response.status === 403) {
           _this.$message({
@@ -131,7 +137,7 @@ export default {
           type: json.status,
           message: json.msg
         })
-        _this.refresh()
+        _this.refresh(1)
       }, resp => {
         _this.loading = false
         if (resp.response.status === 403) {
@@ -146,6 +152,10 @@ export default {
           })
         }
       })
+    },
+    getTableData (data) {
+      this.currentPage = data
+      this.refresh(data)
     }
   },
   data () {
@@ -153,19 +163,22 @@ export default {
       cateName: '',
       selItems: [],
       categories: [],
-      loading: false
+      loading: false,
+      totalCount: 55,
+      currentPage: 1,
+      limit: 10
     }
   },
   mounted: function () {
     this.loading = true
-    this.refresh()
+    this.refresh(1)
   }
 }
 </script>
 
 <style>
   .cate_mana_header {
-    background-color: #ececec;
+    background-color: white;
     margin-top: 20px;
     padding-left: 5px;
     display: flex;
@@ -177,7 +190,7 @@ export default {
     display: flex;
     flex-direction: column;
     padding-left: 5px;
-    background-color: #ececec;
+    background-color: white;
     margin-top: 20px;
     padding-top: 10px;
   }

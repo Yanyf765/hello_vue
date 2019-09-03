@@ -13,7 +13,6 @@
       :data="articles"
       tooltip-effect="dark"
       style="width: 100%;overflow-x: hidden;overflow-y: hidden;"
-      max-height="390"
       @selection-change="handleSelectionChange" v-loading="loading">
       <el-table-column
         type="selection"
@@ -70,9 +69,9 @@
         v-show="this.articles.length>0 && showDelete"
         :disabled="this.selItems.length == 0"
         @click="deleteMany">批量删除
-
       </el-button>
     </div>
+    <MyPagination :cur="currentPage" :all="totalCount" :callback="getTableData"></MyPagination>
   </div>
 </template>
 
@@ -85,17 +84,23 @@ import {postRequest} from '../utils/api'
 import {isNotNullORBlank} from '../utils/utils'
 // eslint-disable-next-line import/no-duplicates
 import {Bus} from '../utils/utils'
+import MyPagination from '@/components/MyPagination'
 export default {
   data () {
     return {
       articles: [],
       keywords: '',
       loading: false,
-      totalCount: -1,
-      pageSize: 6,
+      totalCount: 10,
+      pageSize: 10,
       selItems: false,
-      dustbinData: []
+      dustbinData: [],
+      currentPage: 1,
+      limit: 10
     }
+  },
+  components: {
+    MyPagination: MyPagination
   },
   name: 'BlogTable',
   mounted: function () {
@@ -121,15 +126,15 @@ export default {
       var _this = this
       var url = ''
       if (this.state === -2) {
-        url = '/admin/article/all' + '?page=' + page + '&count=' + count + '&keywords=' + this.keywords
+        url = '/admin/article/page' + '?page=' + page + '&keywords=' + this.keywords
       } else {
-        url = '/article/all?state=' + this.state + '&page=' + page + '&count=' + count + '&keywords=' + this.keywords
+        url = '/article/page?state=' + this.state + '&page=' + page + '&keywords=' + this.keywords
       }
       getRequest(url).then(resp => {
         _this.loading = false
         if (resp.status === 200) {
-          _this.articles = resp.data.articles
-          _this.totalCount = resp.data.totalCount
+          _this.articles = resp.data.data.list
+          _this.totalCount = Math.ceil(resp.data.data.totalCount / 10)
         } else {
           _this.$message({type: 'error', message: '数据加载失败!'})
         }
@@ -222,7 +227,11 @@ export default {
         })
       })
     },
-    deleteMany () {}
+    deleteMany () {},
+    getTableData (data) {
+      this.currentPage = data
+      this.loadBlogs(data)
+    }
   },
   props: ['state', 'showEdit', 'showDelete', 'activeName']
 }
