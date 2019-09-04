@@ -76,13 +76,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import {getRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {deleteRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {putRequest} from '../utils/api'
-
+import {getRequest, deleteRequest, putRequest} from '../utils/api'
 export default {
   name: 'UserMana',
   mounted: function () {

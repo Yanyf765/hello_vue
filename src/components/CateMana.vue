@@ -56,14 +56,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import {postRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-// import {putRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {deleteRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {getRequest} from '../utils/api'
+import {postRequest, deleteRequest, getRequest} from '../utils/api'
 import MyPagination from '@/components/MyPagination'
 export default {
   name: 'CateMana',

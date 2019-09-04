@@ -76,14 +76,8 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import {getRequest, putRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {postRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {isNotNullORBlank} from '../utils/utils'
-// eslint-disable-next-line import/no-duplicates
-import {Bus} from '../utils/utils'
+import {getRequest, putRequest, postRequest} from '../utils/api'
+import {isNotNullORBlank, Bus} from '../utils/utils'
 import MyPagination from '@/components/MyPagination'
 export default {
   data () {

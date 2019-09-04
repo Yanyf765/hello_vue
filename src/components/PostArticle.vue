@@ -56,18 +56,10 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import {getRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {uploadFileRequest} from '../utils/api'
+import {getRequest, uploadFileRequest, postRequest} from '../utils/api'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-// eslint-disable-next-line import/no-duplicates
-import {Bus} from '../utils/utils'
-// eslint-disable-next-line import/no-duplicates
-import {postRequest} from '../utils/api'
-// eslint-disable-next-line import/no-duplicates
-import {isNotNullORBlank} from '../utils/utils'
+import {isNotNullORBlank, Bus} from '../utils/utils'
 export default {
   name: 'PostArticle',
   components: {
